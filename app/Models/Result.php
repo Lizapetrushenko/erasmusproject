@@ -9,6 +9,8 @@ class Result extends Model
     protected $fillable = [
         'user_id',
         'score',
+        'correct_answers',
+        'remaining_lives',
         'date',
     ];
 
