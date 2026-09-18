@@ -15,5 +15,6 @@ class Question extends Model
         'correct_option',
         'category',
         'country',
+        'difficulty',
     ];
 }
