@@ -8,6 +8,7 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Password;
 use Illuminate\Validation\Rules\Password as PasswordRule;
+use Illuminate\Validation\ValidationException;
 
 class AuthController extends Controller
 {
@@ -19,45 +20,34 @@ class AuthController extends Controller
         ]);
 
         if (! Auth::attempt($credentials, $request->boolean('remember'))) {
-            return response()->json([
-                'message' => 'The email or password is incorrect.',
-                'errors' => [
-                    'email' => ['The email or password is incorrect.']
-                ],
-            ], 422);
+            throw ValidationException::withMessages([
+                'email' => ['The email or password is incorrect.'],
+            ]);
         }
 
         $request->session()->regenerate();
 
-        return response()->json([
-            'message' => 'Login successful.',
-            'redirect' => route('dashboard'),
-        ]);
+        return redirect()->intended(route('dashboard'));
     }
 
     public function register(Request $request)
     {
         $validated = $request->validate([
-            'username' => ['required', 'string', 'max:255'],
+            'name' => ['required', 'string', 'max:255'],
             'email' => ['required', 'email', 'max:255', 'unique:users,email'],
             'password' => ['required', 'string', 'min:8', 'confirmed'],
         ]);
 
         $user = User::create([
-            'username' => $validated['username'],
+            'name' => $validated['name'],
             'email' => $validated['email'],
             'password' => Hash::make($validated['password']),
         ]);
 
-        $user->assignRole('user');
-
         Auth::login($user);
         $request->session()->regenerate();
 
-        return response()->json([
-            'message' => 'Registration successful.',
-            'redirect' => route('dashboard'),
-        ], 201);
+        return redirect()->route('dashboard');
     }
 
     public function forgotPassword(Request $request)
@@ -71,17 +61,12 @@ class AuthController extends Controller
         );
 
         if ($status !== Password::RESET_LINK_SENT) {
-            return response()->json([
-                'message' => __($status),
-                'errors' => [
-                    'email' => [__($status)]
-                ],
-            ], 422);
+            throw ValidationException::withMessages([
+                'email' => [__($status)],
+            ]);
         }
 
-        return response()->json([
-            'message' => __($status),
-        ]);
+        return back()->with('status', __($status));
     }
 
     public function resetPassword(Request $request)
@@ -111,15 +96,12 @@ class AuthController extends Controller
         );
 
         if ($status !== Password::PASSWORD_RESET) {
-            return response()->json([
-                'message' => __($status),
-            ], 422);
+            throw ValidationException::withMessages([
+                'email' => [__($status)],
+            ]);
         }
 
-        return response()->json([
-            'message' => 'Password successfully reset.',
-            'redirect' => route('login'),
-        ]);
+        return redirect()->route('login')->with('status', 'Password successfully reset.');
     }
 
     public function logout(Request $request)
@@ -129,8 +111,6 @@ class AuthController extends Controller
         $request->session()->invalidate();
         $request->session()->regenerateToken();
 
-        return response()->json([
-            'redirect' => route('login')
-        ]);
+        return redirect()->route('login');
     }
 }
