@@ -19,68 +19,87 @@ class AuthController extends Controller
         ]);
 
         if (! Auth::attempt($credentials, $request->boolean('remember'))) {
-            return response()->json([
-                'message' => 'The email or password is incorrect.',
-                'errors' => [
-                    'email' => ['The email or password is incorrect.']
-                ],
-            ], 422);
+            $errors = ['email' => 'The email or password is incorrect.'];
+
+            if ($request->expectsJson()) {
+                return response()->json([
+                    'message' => $errors['email'],
+                    'errors' => ['email' => [$errors['email']]],
+                ], 422);
+            }
+
+            return back()->withInput($request->only('email'))->withErrors($errors);
         }
 
         $request->session()->regenerate();
 
-        return response()->json([
-            'message' => 'Login successful.',
-            'redirect' => route('dashboard'),
-        ]);
+        if ($request->expectsJson()) {
+            return response()->json([
+                'message' => 'Login successful.',
+                'redirect' => route('dashboard'),
+            ]);
+        }
+
+        return redirect()->intended(route('dashboard'));
     }
 
     public function register(Request $request)
     {
         $validated = $request->validate([
-            'username' => ['required', 'string', 'max:255'],
+            'name' => ['required', 'string', 'max:255'],
             'email' => ['required', 'email', 'max:255', 'unique:users,email'],
             'password' => ['required', 'string', 'min:8', 'confirmed'],
         ]);
 
         $user = User::create([
-            'username' => $validated['username'],
+            'name' => $validated['name'],
             'email' => $validated['email'],
             'password' => Hash::make($validated['password']),
         ]);
 
-        $user->assignRole('user');
+        if ($request->expectsJson()) {
+            return response()->json([
+                'message' => 'Registration successful. Please sign in.',
+                'redirect' => route('login'),
+            ], 201);
+        }
 
-        Auth::login($user);
-        $request->session()->regenerate();
-
-        return response()->json([
-            'message' => 'Registration successful.',
-            'redirect' => route('dashboard'),
-        ], 201);
+        return redirect()->route('login')->with('status', 'Registration successful. Please sign in.');
     }
 
     public function forgotPassword(Request $request)
     {
-        $request->validate([
+        $validated = $request->validate([
             'email' => ['required', 'email'],
+            'password' => ['required', 'confirmed', PasswordRule::min(8)],
         ]);
 
-        $status = Password::sendResetLink(
-            $request->only('email')
-        );
+        $user = User::where('email', $validated['email'])->first();
 
-        if ($status !== Password::RESET_LINK_SENT) {
+        if (! $user) {
+            $message = 'No account was found with this email address.';
+
+            if (! $request->expectsJson()) {
+                return back()->withInput()->withErrors(['email' => $message]);
+            }
+
             return response()->json([
-                'message' => __($status),
-                'errors' => [
-                    'email' => [__($status)]
-                ],
+                'message' => $message,
+                'errors' => ['email' => [$message]],
             ], 422);
         }
 
+        $user->forceFill([
+            'password' => Hash::make($validated['password']),
+        ])->save();
+
+        if (! $request->expectsJson()) {
+            return redirect()->route('login')->with('status', 'Password successfully reset. Please sign in.');
+        }
+
         return response()->json([
-            'message' => __($status),
+            'message' => 'Password successfully reset. Please sign in.',
+            'redirect' => route('login'),
         ]);
     }
 
@@ -111,9 +130,17 @@ class AuthController extends Controller
         );
 
         if ($status !== Password::PASSWORD_RESET) {
+            if (! $request->expectsJson()) {
+                return back()->withInput()->withErrors(['email' => __($status)]);
+            }
+
             return response()->json([
                 'message' => __($status),
             ], 422);
+        }
+
+        if (! $request->expectsJson()) {
+            return redirect()->route('login')->with('status', 'Password successfully reset. Please sign in.');
         }
 
         return response()->json([
