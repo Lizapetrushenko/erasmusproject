@@ -1,8 +1,9 @@
 <!DOCTYPE html>
-<html lang="{{ app()->getLocale() }}">
+<html lang="{{ str_replace('_', '-', app()->getLocale()) }}">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="csrf-token" content="{{ csrf_token() }}">
     <title>{{ $title ?? 'Country Quiz' }}</title>
     @vite(['resources/css/app.css', 'resources/js/app.js'])
 </head>
@@ -20,7 +21,7 @@
                         <img class="heart" src="{{ asset($heart <= $remainingLives ? 'images/Heart red.svg' : 'images/Heart gray.svg') }}" alt="{{ $heart <= $remainingLives ? __('Remaining life') : __('Lost life') }}" title="{{ $heart <= $remainingLives ? __('Remaining life') : __('Lost life') }}">
                     @endfor
                 </div>
-                <form method="POST" class="header-language-form" aria-label="Language selector">
+                <form method="POST" action="{{ route('locale.switch', ['locale' => app()->getLocale()]) }}" class="header-language-form" aria-label="Language selector">
                     @csrf
                     <select name="locale" aria-label="Language" onchange="this.form.action='{{ url('/locale') }}/' + this.value; this.form.submit()">
                         @foreach (['en' => 'EN', 'hr' => 'HR', 'nl' => 'NL'] as $code => $label)
@@ -28,13 +29,13 @@
                         @endforeach
                     </select>
                 </form>
-                    <button id="theme-toggle" class="theme-toggle game-theme-toggle" type="button" aria-label="Toggle dark mode">
-                        <span class="theme-switch-thumb" aria-hidden="true"></span>
-                        <span class="theme-switch-label">{{ __('Toggle dark mode') }}</span>
-                    </button>
+                <button id="theme-toggle" class="theme-toggle game-theme-toggle" type="button" aria-label="Toggle dark mode">
+                    <span class="theme-switch-thumb" aria-hidden="true"></span>
+                    <span class="theme-switch-label">{{ __('Toggle dark mode') }}</span>
+                </button>
                 <div class="game-account-actions">
                     @if (auth()->user()->isAdmin())
-                        <a class="game-admin-link" href="{{ route('admin.dashboard') }}"><i class="fa-solid fa-shield-halved" aria-hidden="true"></i><span>{{ __('Admin panel') }}</span></a>
+                        <a class="game-admin-link" href="{{ route('admin.dashboard') }}" aria-label="{{ __('Admin panel') }}" title="{{ __('Admin panel') }}"><i class="fa-solid fa-shield-halved" aria-hidden="true"></i><span>{{ __('Admin panel') }}</span></a>
                     @endif
                     <a class="game-profile profile-icon-link" href="{{ route('profile') }}" aria-label="Profile" title="Profile">
                         <i class="fa-solid fa-user" aria-hidden="true"></i>
@@ -50,7 +51,7 @@
                     <a class="admin-header-link" href="{{ route('admin.dashboard') }}">{{ __('Admin panel') }}</a>
                 @endif
             @endauth
-            <form method="POST" class="header-language-form" aria-label="Language selector">
+            <form method="POST" action="{{ route('locale.switch', ['locale' => app()->getLocale()]) }}" class="header-language-form" aria-label="Language selector">
                 @csrf
                 <select name="locale" aria-label="Language" onchange="this.form.action='{{ url('/locale') }}/' + this.value; this.form.submit()">
                     @foreach (['en' => 'EN', 'hr' => 'HR', 'nl' => 'NL'] as $code => $label)
@@ -65,7 +66,7 @@
             <nav class="nav" aria-label="Main navigation">
                 <a href="{{ route('game') }}">{{ __('Play') }}</a>
                 <a href="{{ route('leaderboard') }}">{{ __('Leaderboard') }}</a>
-                <form method="POST" class="header-language-form" aria-label="Language selector">
+                <form method="POST" action="{{ route('locale.switch', ['locale' => app()->getLocale()]) }}" class="header-language-form" aria-label="Language selector">
                     @csrf
                     <select name="locale" aria-label="Language" onchange="this.form.action='{{ url('/locale') }}/' + this.value; this.form.submit()">
                         @foreach (['en' => 'EN', 'hr' => 'HR', 'nl' => 'NL'] as $code => $label)
