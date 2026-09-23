@@ -9,6 +9,6 @@
             <p>🎯 <span>10 random questions</span></p>
             <p>🏆 <span>Score saved automatically</span></p>
         </div>
-        <a class="rules-button" href="{{ route('game') }}#choose-level">Go to choose the quiz</a>
+        <a class="rules-button" href="{{ route('levels') }}">Go to choose the quiz</a>
     </main>
 </x-layouts.app>

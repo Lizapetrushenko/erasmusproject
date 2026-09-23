@@ -22,6 +22,18 @@ Route::get('/game', function () {
     return view('pages.dashboard');
 })->name('game');
 
+Route::get('/levels', function () {
+    return view('pages.levels');
+})->name('levels');
+
+Route::get('/countries', function () {
+    return view('pages.countries');
+})->name('countries');
+
+Route::get('/congratulations', function () {
+    return view('pages.congratulations');
+})->name('congratulations');
+
 Route::get('/leaderboard', function () {
     return view('pages.leaderboard');
 })->name('leaderboard');
