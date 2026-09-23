@@ -21,11 +21,6 @@ Route::get('/register', function () {
     return view('authentication.register');
 })->name('register');
 
-Route::get('/questions', function () {
-    return view('questions');
-})->name('questions');
-
-
 Route::post('/register', [AuthController::class, 'register'])->name('register.store');
 Route::post('/logout', [AuthController::class, 'logout'])->middleware('auth')->name('logout');
 
