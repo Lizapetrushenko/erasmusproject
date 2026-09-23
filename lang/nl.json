@@ -79,5 +79,49 @@
     "Correct option": "Juiste optie",
     "Category": "Categorie",
     "Country": "Land",
-    "Difficulty": "Moeilijkheidsgraad"
+    "Difficulty": "Moeilijkheidsgraad",
+
+    "Reset password": "Wachtwoord resetten",
+    "Forgot your password?": "Wachtwoord vergeten?",
+    "Enter your email and we'll send you a password reset link.": "Voer je e-mail in en we sturen je een link om je wachtwoord te resetten.",
+    "Send reset link": "Verstuur resetlink",
+    "Enter your email and choose a new password.": "Voer je e-mail in en kies een nieuw wachtwoord.",
+    "New Password:": "Nieuw wachtwoord:",
+    "Repeat New Password:": "Herhaal nieuw wachtwoord:",
+    "Back to sign in": "Terug naar inloggen",
+    "Set a new password": "Stel een nieuw wachtwoord in",
+    "Rewrite New Password:": "Nieuw wachtwoord opnieuw invoeren:",
+    "Save new password": "Nieuw wachtwoord opslaan",
+
+    "Congratulations": "Gefeliciteerd",
+    "You did it !!!": "Je hebt het gedaan !!!",
+    "Score:": "Score:",
+    "See leaderboard": "Bekijk scorebord",
+    "go to the main menu": "ga naar het hoofdmenu",
+
+    "Choose country": "Kies een land",
+    "Choose a country": "Kies een land",
+    "The Netherlands": "Nederland",
+
+    "Choose level": "Kies niveau",
+    "Choose quiz difficulty": "Kies moeilijkheidsgraad van de quiz",
+
+    "Question": "Vraag",
+    "Lives:": "Levens:",
+
+    "The email or password is incorrect.": "Het e-mailadres of wachtwoord is onjuist.",
+    "Login successful.": "Inloggen gelukt.",
+    "Registration successful. Please sign in.": "Registratie geslaagd. Log alsjeblieft in.",
+    "No account was found with this email address.": "Er is geen account gevonden met dit e-mailadres.",
+    "Password successfully reset. Please sign in.": "Wachtwoord succesvol gereset. Log alsjeblieft in.",
+    "Password successfully reset.": "Wachtwoord succesvol gereset.",
+    "Enter your current password to change it.": "Voer je huidige wachtwoord in om het te wijzigen.",
+    "Profile updated successfully.": "Profiel succesvol bijgewerkt.",
+    "Your account was deleted.": "Je account is verwijderd.",
+
+    "Question created.": "Vraag aangemaakt.",
+    "Question updated.": "Vraag bijgewerkt.",
+    "Question deleted.": "Vraag verwijderd.",
+
+    "This quiz does not have enough questions yet.": "Deze quiz heeft nog niet genoeg vragen."
 }

@@ -30,7 +30,7 @@ class QuestionController extends Controller
     {
         Question::create($this->validated($request));
 
-        return redirect()->route('admin.questions.index')->with('status', 'Question created.');
+        return redirect()->route('admin.questions.index')->with('status', __('Question created.'));
     }
 
     public function edit(Question $question): View
@@ -42,14 +42,14 @@ class QuestionController extends Controller
     {
         $question->update($this->validated($request));
 
-        return redirect()->route('admin.questions.index')->with('status', 'Question updated.');
+        return redirect()->route('admin.questions.index')->with('status', __('Question updated.'));
     }
 
     public function destroy(Question $question): RedirectResponse
     {
         $question->delete();
 
-        return redirect()->route('admin.questions.index')->with('status', 'Question deleted.');
+        return redirect()->route('admin.questions.index')->with('status', __('Question deleted.'));
     }
 
     private function validated(Request $request): array
