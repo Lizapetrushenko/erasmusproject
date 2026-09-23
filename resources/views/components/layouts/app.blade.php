@@ -36,6 +36,14 @@
     @elseif($minimal ?? false)
         <header class="topbar minimal-topbar">
             <a class="brand" href="{{ auth()->check() ? route('dashboard') : route('home') }}"><img class="brand-logo" src="{{ asset('images/Country_Quiz.png') }}" alt="Country Quiz logo"><span>Country Quiz</span></a>
+            <form method="POST" class="header-language-form" aria-label="Language selector">
+                @csrf
+                <select name="locale" aria-label="Language" onchange="this.form.action='{{ url('/locale') }}/' + this.value; this.form.submit()">
+                    @foreach (['en' => 'EN', 'hr' => 'HR', 'nl' => 'NL'] as $code => $label)
+                        <option value="{{ $code }}" @selected(app()->getLocale() === $code)>{{ $label }}</option>
+                    @endforeach
+                </select>
+            </form>
         </header>
     @elseif($welcome ?? false)
     @else
