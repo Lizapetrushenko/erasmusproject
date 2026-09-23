@@ -9,6 +9,72 @@
     --red: #ed4c5c;
     --green: #27ef09;
     --yellow: #f4c95d;
+    --surface: #fff;
+}
+
+:root[data-theme="dark"] {
+    --ink: #f2f1f5;
+    --muted: #a9a6b0;
+    --paper: #17161d;
+    --line: #322f3a;
+    --surface: #201f28;
+}
+
+:root[data-theme="dark"] .panel,
+:root[data-theme="dark"] .auth-card,
+:root[data-theme="dark"] .level,
+:root[data-theme="dark"] .country,
+:root[data-theme="dark"] .rank,
+:root[data-theme="dark"] .answer,
+:root[data-theme="dark"] .button.secondary,
+:root[data-theme="dark"] .art-circle:before,
+:root[data-theme="dark"] .welcome-screen {
+    background: var(--surface);
+    color: var(--ink);
+}
+
+.theme-toggle {
+    position: fixed;
+    top: 16px;
+    right: 16px;
+    z-index: 60;
+    width: 36px;
+    height: 36px;
+    border: 1px solid var(--line);
+    border-radius: 50%;
+    background: var(--surface);
+    color: var(--ink);
+    font-size: 16px;
+    cursor: pointer;
+}
+
+.lang-switch {
+    position: fixed;
+    top: 16px;
+    right: 62px;
+    z-index: 60;
+    display: flex;
+    gap: 4px;
+    background: var(--surface);
+    border: 1px solid var(--line);
+    border-radius: 8px;
+    padding: 4px;
+}
+
+.lang-switch button {
+    border: 0;
+    background: none;
+    color: var(--muted);
+    font-size: 11px;
+    font-weight: 700;
+    padding: 4px 8px;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+.lang-switch button.active {
+    background: var(--ink);
+    color: var(--paper);
 }
 
 * {
