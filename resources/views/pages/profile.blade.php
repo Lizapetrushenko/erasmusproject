@@ -15,13 +15,7 @@
                 <button class="profile-save" id="save-profile" type="submit" hidden>{{ __('Save profile') }}</button>
             </form>
         </section>
-        <section class="profile-preferences" aria-labelledby="preferences-title">
-            <div>
-                <h2 id="preferences-title">{{ __('Preferences') }}</h2>
-                <p>{{ __('Change the appearance of your quiz.') }}</p>
-            </div>
-            <button id="theme-toggle" class="theme-toggle profile-theme-toggle" type="button" aria-label="Toggle dark mode"></button>
-        </section>
+        
         <div class="profile-actions">
             <button class="delete-account" id="open-delete-account" type="button">{{ __('Delete account') }}</button>
             <form method="POST" action="{{ route('logout') }}" class="profile-logout-form">
