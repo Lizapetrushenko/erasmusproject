@@ -13,6 +13,12 @@
                 @error('password') <p class="form-error">{{ $message }}</p> @enderror
                 <a class="auth-link" href="{{ route('password.request') }}">Forgot password?</a>
                 <button class="button" type="submit">Sign in</button>
+            <h1>{{ __('Sign in') }}</h1>
+            <form method="POST" action="{{ route('login') }}">
+                @csrf
+                <label class="field">{{ __('Email address:') }}<input type="email" name="email" required></label>
+                <label class="field">{{ __('Password:') }}<input type="password" name="password" required></label>
+                <button class="button" type="submit">{{ __('Sign in') }}</button>
             </form>
         </section>
     </main>

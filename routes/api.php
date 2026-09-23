@@ -16,3 +16,4 @@ Route::get('/leaderboard', [QuizController::class, 'leaderboard']);
 
 Route::get('/scores', [QuizController::class, 'scores']);
 Route::post('/scores', [QuizController::class, 'storeScore']);
+Route::get('/leaderboard', [QuizController::class, 'leaderboard']);

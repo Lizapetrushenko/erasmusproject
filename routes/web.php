@@ -1,10 +1,17 @@
 <?php
 
+use App\Http\Controllers\Admin\QuestionController as AdminQuestionController;
+use App\Http\Controllers\Api\QuizController;
+use App\Http\Controllers\Api\ScoreController;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\QuizGameController;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', function () {
+    if (auth()->check()) {
+        return redirect()->route('dashboard');
+    }
+
     return view('welcome');
 })->name('home');
 
@@ -13,6 +20,39 @@ Route::get('/dashboard', fn () => view('pages.dashboard'))
 
 Route::get('/game', fn () => view('pages.dashboard'))
     ->middleware('auth')->name('game');
+
+Route::get('/game', function () {
+    return view('pages.game');
+})->middleware(['auth'])->name('game');
+
+Route::get('/profile', function () {
+    return view('pages.profile');
+})->middleware(['auth'])->name('profile');
+
+Route::get('/leaderboard', function () {
+    return view('pages.leaderboard');
+})->middleware(['auth'])->name('leaderboard');
+
+Route::middleware(['auth'])->group(function () {
+    Route::get('/scores', [ScoreController::class, 'index'])->name('scores.index');
+    Route::post('/scores', [ScoreController::class, 'store'])->name('scores.store');
+    Route::get('/scores/{score}', [ScoreController::class, 'show'])->name('scores.show');
+
+    Route::post('/quizzes/{quiz}/start', [QuizController::class, 'start'])->name('quizzes.start');
+    Route::post('/quizzes/{quiz}/submit', [QuizController::class, 'submit'])->name('quizzes.submit');
+});
+
+Route::post('/locale/{locale}', function (string $locale) {
+    abort_unless(in_array($locale, ['en', 'hr', 'nl'], true), 404);
+
+    session(['locale' => $locale]);
+
+    return back();
+})->name('locale.switch');
+
+Route::middleware(['auth', 'admin'])->prefix('admin')->name('admin.')->group(function () {
+    Route::resource('questions', AdminQuestionController::class)->except(['show']);
+});
 
 Route::get('/login', function () {
     return view('authentication.login');
