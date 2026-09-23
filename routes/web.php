@@ -48,8 +48,29 @@ Route::get('/register', function () {
     return view('authentication.register');
 })->name('register');
 
-Route::post('/register', [AuthController::class, 'register'])->name('register.store');
-Route::post('/logout', [AuthController::class, 'logout'])->middleware('auth')->name('logout');
+Route::get('/game', function () {
+    return view('pages.dashboard');
+})->name('game');
+
+Route::get('/levels', function () {
+    return view('pages.levels');
+})->name('levels');
+
+Route::get('/countries', function () {
+    return view('pages.countries');
+})->name('countries');
+
+Route::get('/congratulations', function () {
+    return view('pages.congratulations');
+})->name('congratulations');
+
+Route::get('/leaderboard', function () {
+    return view('pages.leaderboard');
+})->name('leaderboard');
+
+Route::get('/profile', function () {
+    return view('pages.profile');
+})->name('profile');
 
 if (file_exists(__DIR__.'/auth.php')) {
     require __DIR__.'/auth.php';
