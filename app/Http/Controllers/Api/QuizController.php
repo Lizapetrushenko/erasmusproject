@@ -205,6 +205,7 @@ class QuizController extends Controller
         return 'quiz-session:'.$sessionId;
     }
 
+    private function pointsForDifficulty(string $difficulty): int
     private function pointsFor(string $difficulty): int
     {
         return match ($difficulty) {

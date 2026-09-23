@@ -6,6 +6,7 @@
     <title>{{ $title ?? 'Country Quiz' }}</title>
     @vite(['resources/css/app.css', 'resources/js/app.js'])
 </head>
+<body class="{{ ($profile ?? false) ? 'profile-page' : '' }}">
 <body>
 <button id="theme-toggle" class="theme-toggle" type="button" aria-label="Toggle dark mode">🌙</button>
 
@@ -17,10 +18,21 @@
 </form>
 
 <div class="site">
-    @if($welcome ?? false)
-    @elseif($game ?? false)
+    @if($game ?? false)
         <header class="game-topbar">
-            <a class="game-brand" href="{{ route('home') }}"><img src="{{ asset('images/Country_Quiz.png') }}" alt="Country Quiz logo"><span>Country Quiz</span></a>
+            <a class="game-brand" href="{{ auth()->check() ? route('dashboard') : route('home') }}"><img src="{{ asset('images/Country_Quiz.png') }}" alt="Country Quiz logo"><span>Country Quiz</span></a>
+            @auth
+                <div class="game-score">Your scores: <strong>{{ auth()->user()->score ?? 0 }}</strong></div>
+                @php($remainingLives = min(3, max(0, request()->integer('lives', auth()->user()->lives ?? 3))))
+                <div class="game-hearts" aria-label="{{ $remainingLives }} lives remaining">
+                    @for ($heart = 1; $heart <= 3; $heart++)
+                        <span class="heart {{ $heart <= $remainingLives ? 'heart-live' : 'heart-lost' }}">♥</span>
+                    @endfor
+                </div>
+                <a class="game-profile profile-icon-link" href="{{ route('profile') }}" aria-label="Profile" title="Profile">
+                    <i class="fa-solid fa-user" aria-hidden="true"></i>
+                </a>
+            @endauth
             <div class="game-score">{{ __('Your scores:') }} <strong>{{ auth()->user()?->totalScore() ?? 0 }}</strong></div>
             @php($remainingLives = min(3, max(0, request()->integer('lives', 3))))
             <div class="game-hearts" aria-label="{{ $remainingLives }} lives remaining">
@@ -32,11 +44,20 @@
         </header>
     @elseif($minimal ?? false)
         <header class="topbar minimal-topbar">
-            <a class="brand" href="{{ route('home') }}"><img class="brand-logo" src="{{ asset('images/Country_Quiz.png') }}" alt="Country Quiz logo"><span>Country Quiz</span></a>
+            <a class="brand" href="{{ auth()->check() ? route('dashboard') : route('home') }}"><img class="brand-logo" src="{{ asset('images/Country_Quiz.png') }}" alt="Country Quiz logo"><span>Country Quiz</span></a>
         </header>
     @else
         <header class="topbar">
-            <a class="brand" href="{{ route('home') }}"><img class="brand-logo" src="{{ asset('images/Country_Quiz.png') }}" alt="Country Quiz logo"><span>Country Quiz</span></a>
+            <a class="brand" href="{{ auth()->check() ? route('dashboard') : route('home') }}"><img class="brand-logo" src="{{ asset('images/Country_Quiz.png') }}" alt="Country Quiz logo"><span>Country Quiz</span></a>
+            @auth
+                <nav class="nav" aria-label="Main navigation">
+                    <a href="{{ route('game') }}">Play</a>
+                    <a href="{{ route('leaderboard') }}">Leaderboard</a>
+                    <a href="{{ route('profile') }}" aria-label="Profile" title="Profile" class="profile-icon-link">
+                        <i class="fa-solid fa-user" aria-hidden="true"></i>
+                    </a>
+                </nav>
+            @endauth
             <nav class="nav" aria-label="Main navigation">
                 <a href="{{ route('game') }}">{{ __('Play') }}</a>
                 <a href="{{ route('leaderboard') }}">{{ __('Leaderboard') }}</a>
