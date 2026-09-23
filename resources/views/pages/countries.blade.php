@@ -2,9 +2,14 @@
     <main class="countries-screen">
         <h1>Choose country</h1>
         <div class="country-choices" role="group" aria-label="Choose a country">
-            <a class="country-choice country-croatia" href="{{ route('game') }}?country=Croatia&difficulty={{ request('difficulty', 'easy') }}"><img class="country-flag" src="{{ asset('images/croatia.png') }}" alt=""><span>Croatia</span></a>
-            <a class="country-choice country-netherlands" href="{{ route('game') }}?country=Netherlands&difficulty={{ request('difficulty', 'easy') }}"><img class="country-flag" src="{{ asset('images/netherland.png') }}" alt=""><span>The Netherlands</span></a>
-            <a class="country-choice country-sweden" href="{{ route('game') }}?country=Sweden&difficulty={{ request('difficulty', 'easy') }}"><img class="country-flag" src="{{ asset('images/sweden.png') }}" alt=""><span>Sweden</span></a>
+            @foreach ([['Croatia', 'croatia.png', 'country-croatia'], ['Netherlands', 'netherland.png', 'country-netherlands'], ['Sweden', 'sweden.png', 'country-sweden']] as [$country, $image, $class])
+                <form method="POST" action="{{ route('quiz.start') }}">
+                    @csrf
+                    <input type="hidden" name="country" value="{{ $country }}">
+                    <input type="hidden" name="difficulty" value="{{ request('difficulty', 'easy') }}">
+                    <button class="country-choice {{ $class }}" type="submit"><img class="country-flag" src="{{ asset('images/'.$image) }}" alt=""><span>{{ $country === 'Netherlands' ? 'The Netherlands' : $country }}</span></button>
+                </form>
+            @endforeach
         </div>
     </main>
 </x-layouts.app>

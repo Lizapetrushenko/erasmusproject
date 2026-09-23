@@ -42,7 +42,7 @@
         </div>
 
         <div class="rules-cta">
-            <a class="rules-button" href="{{ route('game') }}#choose-level">Go to choose the quiz</a>
+            <a class="rules-button" href="{{ route('levels') }}">Go to choose the quiz</a>
         </div>
     </main>
 </x-layouts.app>

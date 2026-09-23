@@ -6,7 +6,7 @@
     <title>{{ $title ?? 'Country Quiz' }}</title>
     @vite(['resources/css/app.css', 'resources/js/app.js'])
 </head>
-<body>
+<body class="{{ ($profile ?? false) ? 'profile-page' : '' }}">
 <div class="site">
     @if($welcome ?? false)
     @elseif($game ?? false)

@@ -156,8 +156,49 @@ class AuthController extends Controller
         $request->session()->invalidate();
         $request->session()->regenerateToken();
 
-        return response()->json([
-            'redirect' => route('login')
+        if ($request->expectsJson()) {
+            return response()->json(['redirect' => route('login')]);
+        }
+
+        return redirect()->route('login');
+    }
+
+    public function updateProfile(Request $request)
+    {
+        $validated = $request->validate([
+            'name' => ['required', 'string', 'max:255'],
+            'email' => ['required', 'email', 'max:255', 'unique:users,email,'.$request->user()->id],
+            'current_password' => ['nullable', 'current_password'],
+            'password' => ['nullable', 'confirmed', PasswordRule::min(8)],
         ]);
+
+        if (! empty($validated['password']) && empty($validated['current_password'])) {
+            return back()->withErrors(['current_password' => 'Enter your current password to change it.']);
+        }
+
+        $user = $request->user();
+        $user->name = $validated['name'];
+        $user->email = $validated['email'];
+        if (! empty($validated['password'])) {
+            $user->password = Hash::make($validated['password']);
+        }
+        $user->save();
+
+        return back()->with('status', 'Profile updated successfully.');
+    }
+
+    public function deleteAccount(Request $request)
+    {
+        $request->validate([
+            'password' => ['required', 'current_password'],
+        ]);
+
+        $user = $request->user();
+        Auth::logout();
+        $user->delete();
+        $request->session()->invalidate();
+        $request->session()->regenerateToken();
+
+        return redirect()->route('home')->with('status', 'Your account was deleted.');
     }
 }

@@ -1,27 +1,18 @@
 <?php
 
 use App\Http\Controllers\AuthController;
+use App\Http\Controllers\QuizGameController;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', function () {
     return view('welcome');
 })->name('home');
 
-Route::get('/dashboard', function () {
-    return view('pages.dashboard');
-})->middleware(['auth', 'verified'])->name('dashboard');
+Route::get('/dashboard', fn () => view('pages.dashboard'))
+    ->middleware(['auth', 'verified'])->name('dashboard');
 
-Route::get('/game', function () {
-    return view('pages.dashboard');
-})->middleware('auth')->name('game');
-
-Route::get('/leaderboard', function () {
-    return view('pages.leaderboard');
-})->middleware('auth')->name('leaderboard');
-
-Route::get('/profile', function () {
-    return view('pages.profile');
-})->middleware('auth')->name('profile');
+Route::get('/game', fn () => view('pages.dashboard'))
+    ->middleware('auth')->name('game');
 
 Route::get('/login', function () {
     return view('authentication.login');
@@ -50,29 +41,34 @@ Route::get('/register', function () {
 
 Route::post('/register', [AuthController::class, 'register'])->name('register.store');
 
-Route::get('/game', function () {
-    return view('pages.dashboard');
-})->name('game');
+Route::get('/levels', fn () => view('pages.levels'))
+    ->middleware('auth')->name('levels');
 
-Route::get('/levels', function () {
-    return view('pages.levels');
-})->name('levels');
+Route::get('/countries', fn () => view('pages.countries'))
+    ->middleware('auth')->name('countries');
 
-Route::get('/countries', function () {
-    return view('pages.countries');
-})->name('countries');
+Route::post('/quiz/start', [QuizGameController::class, 'start'])
+    ->middleware('auth')->name('quiz.start');
+Route::get('/quiz', [QuizGameController::class, 'show'])
+    ->middleware('auth')->name('quiz.show');
+Route::post('/quiz/answer', [QuizGameController::class, 'answer'])
+    ->middleware('auth')->name('quiz.answer');
 
 Route::get('/congratulations', function () {
     return view('pages.congratulations');
 })->name('congratulations');
 
-Route::get('/leaderboard', function () {
-    return view('pages.leaderboard');
-})->name('leaderboard');
+Route::get('/leaderboard', fn () => view('pages.leaderboard'))
+    ->middleware('auth')->name('leaderboard');
 
-Route::get('/profile', function () {
-    return view('pages.profile');
-})->name('profile');
+Route::get('/profile', fn () => view('pages.profile'))
+    ->middleware('auth')->name('profile');
+Route::put('/profile', [AuthController::class, 'updateProfile'])
+    ->middleware('auth')->name('profile.update');
+Route::delete('/profile', [AuthController::class, 'deleteAccount'])
+    ->middleware('auth')->name('profile.delete');
+Route::post('/logout', [AuthController::class, 'logout'])
+    ->middleware('auth')->name('logout');
 
 if (file_exists(__DIR__.'/auth.php')) {
     require __DIR__.'/auth.php';
