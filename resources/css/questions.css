@@ -132,3 +132,13 @@ body{
 .ansA:hover, .ansB:hover, .ansC:hover, .ansD:hover{
     border: 1px solid #85c271;
 }
+
+.correct{
+    background-color: #8fe672 !important;
+    border: 1px solid #6aa856 !important;
+}
+
+.incorrect{
+    background-color: #f28b82 !important;
+    border: 1px solid #d93025 !important;
+}
