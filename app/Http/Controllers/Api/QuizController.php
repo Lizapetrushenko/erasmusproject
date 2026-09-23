@@ -109,7 +109,7 @@ class QuizController extends Controller
 
         if ($isCorrect) {
             $session['correct_answers']++;
-            $session['score'] += 10;
+            $session['score'] += $this->pointsForDifficulty($question->difficulty);
         } else {
             $session['lives']--;
         }
@@ -175,6 +175,16 @@ class QuizController extends Controller
     private function sessionKey(string $sessionId): string
     {
         return 'quiz-session:'.$sessionId;
+    }
+
+    private function pointsForDifficulty(string $difficulty): int
+    {
+        return match ($difficulty) {
+            'easy' => 10,
+            'medium' => 15,
+            'hard' => 20,
+            default => 10,
+        };
     }
 
     private function questionData(Question $question): array

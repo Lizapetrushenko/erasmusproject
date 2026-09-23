@@ -1,4 +1,5 @@
 @import url('https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;700&family=Fraunces:opsz,wght@9..144,700&display=swap');
+@import url('https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css');
 
 :root {
     --ink: #16151b;
@@ -121,6 +122,30 @@ img {
     color: var(--ink);
 }
 
+.profile-icon-link,
+.game-profile {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 38px;
+    height: 38px;
+    border-radius: 50%;
+    background: rgba(22, 21, 27, 0.06);
+    color: var(--ink);
+    transition: background-color 0.2s ease, transform 0.2s ease;
+}
+
+.profile-icon-link:hover,
+.game-profile:hover {
+    background: rgba(22, 21, 27, 0.12);
+    transform: translateY(-1px);
+}
+
+.profile-icon-link i,
+.game-profile i {
+    font-size: 16px;
+}
+
 .nav-button {
     padding: 11px 18px;
     border: 1px solid var(--ink);
@@ -158,8 +183,8 @@ h2 {
     min-height: 40px;
     padding: 0 22px;
     border: 0;
-    border-radius: 7px;
-    background: var(--ink);
+    border-radius: 5px;
+    background: #3AADA4;
     color: #fff;
     font-weight: 700;
     font-size: 14px;
@@ -170,14 +195,34 @@ h2 {
     transform: translateY(-1px);
 }
 
+.form-error {
+    margin: -8px 0 10px;
+    color: var(--red);
+    font-size: 12px;
+}
+
+.form-success {
+    margin-bottom: 16px;
+    color: var(--blue);
+    font-size: 12px;
+}
+
+.auth-link {
+    display: inline-block;
+    margin-bottom: 16px;
+    color: var(--blue);
+    font-size: 12px;
+    text-decoration: underline;
+}
+
 .button.secondary {
-    background: #fff;
+    background: #3AADA4;
     color: var(--ink);
     border: 1px solid var(--line);
 }
 
 .button.red {
-    background: var(--red);
+    background: #3AADA4;
 }
 
 /* Welcome page */
@@ -324,11 +369,12 @@ h2 {
 }
 
 .signup-card .button {
-    background: linear-gradient(#ff646b 0 42%, #fff 43% 58%, #5145c5 100%);
+    background: #3AADA4;
+
 }
 
 .signin-card .button {
-    background: linear-gradient(#3e86d9 0%, #f5ed5b 50%, #4d8ad5 100%);
+    background: #3AADA4;
 }
 
 .subtle {
@@ -1049,6 +1095,32 @@ h2 {
     .welcome-content p {
         margin-top: 20px;
         font-size: clamp(13px, 3.7vw, 16px);
+    }
+
+    .country-flags {
+        margin-top: 24px;
+    }
+
+    .country-flag {
+        width: 62px;
+        height: 40px;
+    }
+
+    .country-flag-croatia span {
+        top: 11px;
+        left: 24px;
+        width: 14px;
+        height: 18px;
+    }
+
+    .country-flag-sweden::before {
+        top: 16px;
+        height: 7px;
+    }
+
+    .country-flag-sweden::after {
+        left: 18px;
+        width: 7px;
     }
 
     .welcome-actions {
