@@ -11,11 +11,14 @@ class Result extends Model
         'score',
         'correct_answers',
         'remaining_lives',
+        'bonus_points',
+        'is_daily_bonus',
         'date',
     ];
 
     protected $casts = [
         'date' => 'date',
+        'is_daily_bonus' => 'boolean',
     ];
 
     public function user()
