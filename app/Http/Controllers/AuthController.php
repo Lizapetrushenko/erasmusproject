@@ -8,6 +8,7 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Password;
 use Illuminate\Validation\Rules\Password as PasswordRule;
+use Illuminate\Validation\ValidationException;
 
 class AuthController extends Controller
 {
@@ -29,6 +30,9 @@ class AuthController extends Controller
             }
 
             return back()->withInput($request->only('email'))->withErrors($errors);
+            throw ValidationException::withMessages([
+                'email' => ['The email or password is incorrect.'],
+            ]);
         }
 
         $request->session()->regenerate();
@@ -65,6 +69,10 @@ class AuthController extends Controller
         }
 
         return redirect()->route('login')->with('status', 'Registration successful. Please sign in.');
+        Auth::login($user);
+        $request->session()->regenerate();
+
+        return redirect()->route('dashboard');
     }
 
     public function forgotPassword(Request $request)
@@ -101,6 +109,13 @@ class AuthController extends Controller
             'message' => 'Password successfully reset. Please sign in.',
             'redirect' => route('login'),
         ]);
+        if ($status !== Password::RESET_LINK_SENT) {
+            throw ValidationException::withMessages([
+                'email' => [__($status)],
+            ]);
+        }
+
+        return back()->with('status', __($status));
     }
 
     public function resetPassword(Request $request)
@@ -147,6 +162,12 @@ class AuthController extends Controller
             'message' => 'Password successfully reset.',
             'redirect' => route('login'),
         ]);
+            throw ValidationException::withMessages([
+                'email' => [__($status)],
+            ]);
+        }
+
+        return redirect()->route('login')->with('status', 'Password successfully reset.');
     }
 
     public function logout(Request $request)
@@ -200,5 +221,6 @@ class AuthController extends Controller
         $request->session()->regenerateToken();
 
         return redirect()->route('home')->with('status', 'Your account was deleted.');
+        return redirect()->route('login');
     }
 }

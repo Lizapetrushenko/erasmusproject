@@ -1,5 +1,23 @@
 import './bootstrap';
 
+const THEME_KEY = 'theme';
+
+const applyTheme = (theme) => {
+	document.documentElement.setAttribute('data-theme', theme);
+	const toggle = document.querySelector('#theme-toggle');
+	if (toggle) toggle.textContent = theme === 'dark' ? '☀️' : '🌙';
+};
+
+const storedTheme = localStorage.getItem(THEME_KEY)
+	?? (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
+applyTheme(storedTheme);
+
+document.querySelector('#theme-toggle')?.addEventListener('click', () => {
+	const next = document.documentElement.getAttribute('data-theme') === 'dark' ? 'light' : 'dark';
+	localStorage.setItem(THEME_KEY, next);
+	applyTheme(next);
+});
+
 const app = document.querySelector('#app');
 
 const userId = app?.dataset.userId;
