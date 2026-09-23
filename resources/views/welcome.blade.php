@@ -3,10 +3,10 @@
         <img class="welcome-logo" src="{{ asset('images/Country_Quiz.png') }}" alt="Country Quiz logo">
         <section class="welcome-content">
             <h1>Country Quiz</h1>
-            <p>Test your knowledge of Croatia, Sweden, and<br>the Netherlands</p>
+            <p>{!! __('Test your knowledge of Croatia, Sweden, and<br>the Netherlands') !!}</p>
             <div class="welcome-actions">
-                <a class="welcome-button welcome-signup" href="{{ route('register') }}">Sign up</a>
-                <a class="welcome-button welcome-signin" href="{{ route('login') }}">Sign in</a>
+                <a class="welcome-button welcome-signup" href="{{ route('register') }}"><span>{{ __('Sign up') }}</span></a>
+                <a class="welcome-button welcome-signin" href="{{ route('login') }}"><span>{{ __('Sign in') }}</span></a>
             </div>
         </section>
     </main>

@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Api;
 use App\Http\Controllers\Controller;
 use App\Models\Question;
 use App\Models\Result;
+use App\Support\Level;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Http\Request;
 use Illuminate\Support\Str;
@@ -12,6 +13,8 @@ use Illuminate\Validation\Rule;
 
 class QuizController extends Controller
 {
+    private const DAILY_CHALLENGE_BONUS = 25;
+
     public function index()
     {
         return response()->json([
@@ -56,11 +59,19 @@ class QuizController extends Controller
     public function start(Request $request, string $quiz)
     {
         $validated = $request->validate([
-            'user_id' => ['required', 'integer', 'exists:users,id'],
             'difficulty' => ['sometimes', Rule::in(['easy', 'medium', 'hard'])],
         ]);
 
         $difficulty = $validated['difficulty'] ?? 'medium';
+        $user = $request->user();
+        $level = $user->level();
+
+        abort_unless(
+            Level::unlocksDifficulty($level, $difficulty),
+            403,
+            ucfirst($difficulty)." difficulty unlocks at a higher level. Your level: ".Level::label($level).'.'
+        );
+
         $questionIds = $this->questionsFor($quiz)
             ->where('difficulty', $difficulty)
             ->inRandomOrder()
@@ -72,7 +83,7 @@ class QuizController extends Controller
 
         $sessionId = (string) Str::uuid();
         Cache::put($this->sessionKey($sessionId), [
-            'user_id' => $validated['user_id'],
+            'user_id' => $user->id,
             'question_ids' => $questionIds,
             'current_index' => 0,
             'lives' => 3,
@@ -109,7 +120,7 @@ class QuizController extends Controller
 
         if ($isCorrect) {
             $session['correct_answers']++;
-            $session['score'] += 10;
+            $session['score'] += $this->pointsFor($question->difficulty);
         } else {
             $session['lives']--;
         }
@@ -118,11 +129,20 @@ class QuizController extends Controller
         $isFinished = $session['lives'] === 0 || $session['current_index'] === 10;
 
         if ($isFinished) {
+            $playedToday = Result::query()
+                ->where('user_id', $session['user_id'])
+                ->whereDate('date', now()->toDateString())
+                ->exists();
+
+            $bonusPoints = $playedToday ? 0 : self::DAILY_CHALLENGE_BONUS;
+
             $result = Result::create([
                 'user_id' => $session['user_id'],
-                'score' => $session['score'],
+                'score' => $session['score'] + $bonusPoints,
                 'correct_answers' => $session['correct_answers'],
                 'remaining_lives' => $session['lives'],
+                'bonus_points' => $bonusPoints,
+                'is_daily_bonus' => $bonusPoints > 0,
                 'date' => now()->toDateString(),
             ]);
 
@@ -134,7 +154,9 @@ class QuizController extends Controller
                     'result_id' => $result->id,
                     'correct_answers' => $session['correct_answers'],
                     'remaining_lives' => $session['lives'],
-                    'total_score' => $session['score'],
+                    'total_score' => $result->score,
+                    'bonus_points' => $bonusPoints,
+                    'is_daily_bonus' => $bonusPoints > 0,
                 ],
             ]);
         }
@@ -154,13 +176,19 @@ class QuizController extends Controller
 
     public function leaderboard()
     {
+        $rows = Result::query()
+            ->selectRaw('user_id, sum(score) as score, count(*) as quizzes_completed')
+            ->with('user:id,name')
+            ->groupBy('user_id')
+            ->orderByDesc('score')
+            ->get();
+
+        $rows->each(function ($row) {
+            $row->level = Level::label(Level::forScore((int) $row->score));
+        });
+
         return response()->json([
-            'data' => Result::query()
-                ->selectRaw('user_id, sum(score) as score, count(*) as quizzes_completed')
-                ->with('user:id,name')
-                ->groupBy('user_id')
-                ->orderByDesc('score')
-                ->get(),
+            'data' => $rows,
         ]);
     }
 
@@ -175,6 +203,17 @@ class QuizController extends Controller
     private function sessionKey(string $sessionId): string
     {
         return 'quiz-session:'.$sessionId;
+    }
+
+    private function pointsForDifficulty(string $difficulty): int
+    private function pointsFor(string $difficulty): int
+    {
+        return match ($difficulty) {
+            'easy' => 10,
+            'medium' => 15,
+            'hard' => 20,
+            default => 10,
+        };
     }
 
     private function questionData(Question $question): array

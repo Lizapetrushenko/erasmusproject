@@ -1,5 +1,23 @@
 import './bootstrap';
 
+const THEME_KEY = 'theme';
+
+const applyTheme = (theme) => {
+	document.documentElement.setAttribute('data-theme', theme);
+	const toggle = document.querySelector('#theme-toggle');
+	if (toggle) toggle.textContent = theme === 'dark' ? '☀️' : '🌙';
+};
+
+const storedTheme = localStorage.getItem(THEME_KEY)
+	?? (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
+applyTheme(storedTheme);
+
+document.querySelector('#theme-toggle')?.addEventListener('click', () => {
+	const next = document.documentElement.getAttribute('data-theme') === 'dark' ? 'light' : 'dark';
+	localStorage.setItem(THEME_KEY, next);
+	applyTheme(next);
+});
+
 const app = document.querySelector('#app');
 
 const userId = app?.dataset.userId;
@@ -158,4 +176,43 @@ if (app && ['/login', '/register'].includes(window.location.pathname)) {
 	renderAuthNotice();
 } else if (app) {
 	loadQuizzes();
+}
+
+const editProfileButton = document.querySelector('#edit-profile');
+if (editProfileButton) {
+	const profileForm = editProfileButton.closest('form');
+	const profileFields = profileForm.querySelectorAll('input');
+	const saveProfileButton = profileForm.querySelector('#save-profile');
+
+	editProfileButton.addEventListener('click', () => {
+		profileFields.forEach((field) => field.removeAttribute('readonly'));
+		saveProfileButton.hidden = false;
+		editProfileButton.setAttribute('aria-label', 'Editing profile');
+		editProfileButton.title = 'Editing profile';
+		profileFields[0]?.focus();
+	});
+}
+
+const deleteModal = document.querySelector('#delete-modal');
+const openDeleteAccountButton = document.querySelector('#open-delete-account');
+
+if (deleteModal && openDeleteAccountButton) {
+	const closeDeleteModal = () => {
+		deleteModal.hidden = true;
+		document.body.classList.remove('modal-open');
+	};
+
+	openDeleteAccountButton.addEventListener('click', () => {
+		deleteModal.hidden = false;
+		document.body.classList.add('modal-open');
+		deleteModal.querySelector('.delete-password')?.focus();
+	});
+
+	deleteModal.querySelectorAll('[data-close-delete]').forEach((button) => {
+		button.addEventListener('click', closeDeleteModal);
+	});
+
+	document.addEventListener('keydown', (event) => {
+		if (event.key === 'Escape' && !deleteModal.hidden) closeDeleteModal();
+	});
 }
