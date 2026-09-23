@@ -79,5 +79,49 @@
     "Correct option": "Točan odgovor",
     "Category": "Kategorija",
     "Country": "Država",
-    "Difficulty": "Težina"
+    "Difficulty": "Težina",
+
+    "Reset password": "Resetiraj lozinku",
+    "Forgot your password?": "Zaboravio/la si lozinku?",
+    "Enter your email and we'll send you a password reset link.": "Unesi svoj email i poslat ćemo ti poveznicu za resetiranje lozinke.",
+    "Send reset link": "Pošalji poveznicu",
+    "Enter your email and choose a new password.": "Unesi svoj email i odaberi novu lozinku.",
+    "New Password:": "Nova lozinka:",
+    "Repeat New Password:": "Ponovi novu lozinku:",
+    "Back to sign in": "Natrag na prijavu",
+    "Set a new password": "Postavi novu lozinku",
+    "Rewrite New Password:": "Ponovno upiši novu lozinku:",
+    "Save new password": "Spremi novu lozinku",
+
+    "Congratulations": "Čestitamo",
+    "You did it !!!": "Uspio/uspjela si !!!",
+    "Score:": "Rezultat:",
+    "See leaderboard": "Pogledaj ljestvicu",
+    "go to the main menu": "idi na glavni izbornik",
+
+    "Choose country": "Odaberi državu",
+    "Choose a country": "Odaberi državu",
+    "The Netherlands": "Nizozemska",
+
+    "Choose level": "Odaberi razinu",
+    "Choose quiz difficulty": "Odaberi težinu kviza",
+
+    "Question": "Pitanje",
+    "Lives:": "Životi:",
+
+    "The email or password is incorrect.": "Email ili lozinka nisu točni.",
+    "Login successful.": "Prijava uspješna.",
+    "Registration successful. Please sign in.": "Registracija uspješna. Molimo prijavi se.",
+    "No account was found with this email address.": "Nije pronađen račun s ovom email adresom.",
+    "Password successfully reset. Please sign in.": "Lozinka je uspješno resetirana. Molimo prijavi se.",
+    "Password successfully reset.": "Lozinka je uspješno resetirana.",
+    "Enter your current password to change it.": "Unesi trenutnu lozinku da bi je promijenio/la.",
+    "Profile updated successfully.": "Profil je uspješno ažuriran.",
+    "Your account was deleted.": "Tvoj račun je izbrisan.",
+
+    "Question created.": "Pitanje je stvoreno.",
+    "Question updated.": "Pitanje je ažurirano.",
+    "Question deleted.": "Pitanje je izbrisano.",
+
+    "This quiz does not have enough questions yet.": "Ovaj kviz još nema dovoljno pitanja."
 }
