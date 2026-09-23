@@ -162,12 +162,6 @@ class AuthController extends Controller
             'message' => 'Password successfully reset.',
             'redirect' => route('login'),
         ]);
-            throw ValidationException::withMessages([
-                'email' => [__($status)],
-            ]);
-        }
-
-        return redirect()->route('login')->with('status', 'Password successfully reset.');
     }
 
     public function logout(Request $request)

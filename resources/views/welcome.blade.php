@@ -7,8 +7,6 @@
             <div class="welcome-actions">
                 <a class="welcome-button welcome-signup" href="{{ route('register') }}"><span>Sign up</span></a>
                 <a class="welcome-button welcome-signin" href="{{ route('login') }}"><span>Sign in</span></a>
-                <a class="welcome-button welcome-signup" href="{{ route('register') }}">{{ __('Sign up') }}</a>
-                <a class="welcome-button welcome-signin" href="{{ route('login') }}">{{ __('Sign in') }}</a>
             </div>
         </section>
     </main>

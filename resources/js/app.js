@@ -5,7 +5,11 @@ const THEME_KEY = 'theme';
 const applyTheme = (theme) => {
 	document.documentElement.setAttribute('data-theme', theme);
 	const toggle = document.querySelector('#theme-toggle');
-	if (toggle) toggle.textContent = theme === 'dark' ? '☀️' : '🌙';
+	if (toggle) {
+		toggle.textContent = theme === 'dark' ? 'NIGHT MODE' : 'DAY MODE';
+		toggle.dataset.theme = theme;
+		toggle.setAttribute('aria-label', theme === 'dark' ? 'Switch to light mode' : 'Switch to dark mode');
+	}
 };
 
 const storedTheme = localStorage.getItem(THEME_KEY)
