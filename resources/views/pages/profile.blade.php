@@ -15,6 +15,24 @@
                 <button class="profile-save" id="save-profile" type="submit" hidden>{{ __('Save profile') }}</button>
             </form>
         </section>
+
+        <section class="panel profile-history">
+            <div class="profile-history-heading">
+                <h2>{{ __('Quiz history') }}</h2>
+                <strong>{{ __('Total score:') }} {{ number_format($totalScore) }}</strong>
+            </div>
+            <div class="profile-history-list">
+                @forelse ($results as $result)
+                    <article class="rank">
+                        <span>{{ $result->date->format('d-m-Y') }} · {{ $result->correct_answers }} {{ __('correct answers') }} · {{ $result->remaining_lives }} {{ __('lives left') }}</span>
+                        <strong>{{ number_format($result->score) }} {{ __('points') }}</strong>
+                    </article>
+                @empty
+                    <p class="subtle">{{ __('Your completed quizzes will appear here.') }}</p>
+                @endforelse
+            </div>
+            @include('components.pagination', ['paginator' => $results])
+        </section>
         
         <div class="profile-actions">
             <button class="delete-account" id="open-delete-account" type="button">{{ __('Delete account') }}</button>

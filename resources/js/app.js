@@ -6,9 +6,9 @@ const applyTheme = (theme) => {
 	document.documentElement.setAttribute('data-theme', theme);
 	const toggle = document.querySelector('#theme-toggle');
 	if (toggle) {
-		toggle.textContent = theme === 'dark' ? 'NIGHT MODE' : 'DAY MODE';
 		toggle.dataset.theme = theme;
 		toggle.setAttribute('aria-label', theme === 'dark' ? 'Switch to light mode' : 'Switch to dark mode');
+		toggle.setAttribute('title', theme === 'dark' ? 'Switch to light mode' : 'Switch to dark mode');
 	}
 };
 
@@ -48,8 +48,13 @@ const shell = (content) => `
 const errorMessage = (error) => error instanceof Error ? error.message : 'Something went wrong.';
 
 const request = async (url, options = {}) => {
+	const csrfToken = document.querySelector('meta[name="csrf-token"]')?.content;
 	const response = await fetch(url, {
-		headers: { Accept: 'application/json', 'Content-Type': 'application/json' },
+		headers: {
+			Accept: 'application/json',
+			'Content-Type': 'application/json',
+			...(csrfToken ? { 'X-CSRF-TOKEN': csrfToken } : {}),
+		},
 		...options,
 	});
 	const payload = await response.json().catch(() => ({}));

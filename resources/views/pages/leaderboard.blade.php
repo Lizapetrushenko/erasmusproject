@@ -1,31 +1,34 @@
-<x-layouts.app>
-    <main class="container">
-        <div class="game-header"><div>
-            <p class="eyebrow">Top explorers</p>
-            <h2>Leaderboard</h2>
-        </div><a class="button secondary" href="{{ route('game') }}">Play a game</a>
-        </div>
-        <section class="panel" style="max-width: 680px; margin-bottom: 80px;">
-            <p class="subtle">The highest scores from this week.</p>
-            <div class="side-list">ž
-                <div class="rank">
-                <span>01 &nbsp; 🇳🇱 Sophie van Dijk</span>
-                <strong>980 pts</strong>
+<x-layouts.app game>
+    <main class="leaderboard-page">
+        <header class="leaderboard-heading">
+            <div>
+                <p class="eyebrow">{{ __('Top explorers') }}</p>
+                <h1>{{ __('Leaderboard') }}</h1>
+                <p class="leaderboard-subtitle">{{ __('The highest scores from all completed quizzes.') }}</p>
             </div>
-            <div class="rank">
-                <span>02 &nbsp; 🇸🇪 Erik Lindberg</span>
-                <strong>920 pts</strong>
-            </div>
-            <div class="rank">
-                <span>03 &nbsp; 🇭🇷 Ana Horvat</span>
-                <strong>870 pts</strong>
-            </div>
-            <div class="rank">
-                <span>04 &nbsp; You</span>
-                <strong>530 pts</strong>
-            </div>
-        </div>
-    </section>
-</main>
-    <main class="container"><div class="game-header"><div><p class="eyebrow">{{ __('Top explorers') }}</p><h2>{{ __('Leaderboard') }}</h2></div><a class="button secondary" href="{{ route('game') }}">{{ __('Play a game') }}</a></div><section class="panel" style="max-width: 680px; margin-bottom: 80px;"><p class="subtle">{{ __('The highest scores from this week.') }}</p><div class="side-list"><div class="rank"><span>01 &nbsp; 🇳🇱 Sophie van Dijk</span><strong>980 pts</strong></div><div class="rank"><span>02 &nbsp; 🇸🇪 Erik Lindberg</span><strong>920 pts</strong></div><div class="rank"><span>03 &nbsp; 🇭🇷 Ana Horvat</span><strong>870 pts</strong></div><div class="rank"><span>04 &nbsp; {{ __('You') }}</span><strong>530 pts</strong></div></div></section></main>
+            <a class="leaderboard-play" href="{{ route('levels') }}"><span aria-hidden="true">▶</span> {{ __('Play a game') }}</a>
+        </header>
+
+        <section class="leaderboard-card" aria-label="{{ __('Leaderboard') }}">
+            @forelse ($leaders as $leader)
+                <article class="leaderboard-row {{ $leader->user_id === auth()->id() ? 'is-you' : '' }}">
+                    <span class="leaderboard-place place-{{ min($loop->iteration, 4) }}">{{ str_pad((string) $loop->iteration, 2, '0', STR_PAD_LEFT) }}</span>
+                    <div class="leaderboard-player">
+                        <strong>{{ $leader->user?->name ?? __('Deleted user') }}</strong>
+                        @if ($leader->user_id === auth()->id())
+                            <span class="leaderboard-you">{{ __('You') }}</span>
+                        @endif
+                        <small>{{ $leader->quizzes_completed }} {{ __('quizzes') }}</small>
+                    </div>
+                    <strong class="leaderboard-score">{{ number_format((int) $leader->total_score) }} <span>{{ __('points') }}</span></strong>
+                </article>
+            @empty
+                <div class="leaderboard-empty">
+                    <span aria-hidden="true">🏆</span>
+                    <p>{{ __('No quiz results yet. Be the first to play!') }}</p>
+                    <a class="leaderboard-play" href="{{ route('levels') }}">{{ __('Play a game') }} →</a>
+                </div>
+            @endforelse
+        </section>
+    </main>
 </x-layouts.app>

@@ -52,6 +52,15 @@ Route::post('/locale/{locale}', function (string $locale) {
     return back();
 })->name('locale.switch');
 
+Route::get('/admin', function () {
+    return view('admin.dashboard', [
+        'usersCount' => \App\Models\User::count(),
+        'questionsCount' => \App\Models\Question::count(),
+        'resultsCount' => \App\Models\Result::count(),
+        'recentResults' => \App\Models\Result::with('user:id,name')->orderByDesc('date')->orderByDesc('id')->paginate(20),
+    ]);
+})->middleware(['auth', 'admin'])->name('admin.dashboard');
+
 Route::middleware(['auth', 'admin'])->prefix('admin')->name('admin.')->group(function () {
     Route::resource('questions', AdminQuestionController::class)->except(['show']);
 });
@@ -60,7 +69,7 @@ Route::get('/login', function () {
     return view('authentication.login');
 })->name('login');
 
-Route::post('/login', [AuthController::class, 'login'])->name('login.store');
+Route::post('/login', [AuthController::class, 'login'])->middleware('throttle:5,1')->name('login.store');
 
 Route::get('/forgot_password', function () {
     return view('authentication.forgot_password');
@@ -97,14 +106,27 @@ Route::post('/quiz/answer', [QuizGameController::class, 'answer'])
     ->middleware('auth')->name('quiz.answer');
 
 Route::get('/congratulations', function () {
-    return view('pages.congratulations');
+    return view('pages.congratulations', ['result' => session('quiz_result')]);
 })->name('congratulations');
 
-Route::get('/leaderboard', fn () => view('pages.leaderboard'))
-    ->middleware('auth')->name('leaderboard');
+Route::get('/leaderboard', function () {
+    $leaders = \App\Models\Result::query()
+        ->selectRaw('user_id, SUM(score) as total_score, COUNT(*) as quizzes_completed')
+        ->with('user:id,name')
+        ->groupBy('user_id')
+        ->orderByDesc('total_score')
+        ->limit(100)
+        ->get();
 
-Route::get('/profile', fn () => view('pages.profile'))
-    ->middleware('auth')->name('profile');
+    return view('pages.leaderboard', ['leaders' => $leaders]);
+})->middleware('auth')->name('leaderboard');
+
+Route::get('/profile', function () {
+    return view('pages.profile', [
+        'results' => request()->user()->results()->orderByDesc('date')->orderByDesc('id')->paginate(10),
+        'totalScore' => request()->user()->totalScore(),
+    ]);
+})->middleware('auth')->name('profile');
 Route::put('/profile', [AuthController::class, 'updateProfile'])
     ->middleware('auth')->name('profile.update');
 Route::delete('/profile', [AuthController::class, 'deleteAccount'])

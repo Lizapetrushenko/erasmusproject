@@ -1,33 +1,66 @@
 <x-layouts.app minimal title="Manage questions">
-    <main class="container" style="padding: 24px 0;">
-        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:16px;">
-            <h2>{{ __('Questions') }}</h2>
-            <a class="button" href="{{ route('admin.questions.create') }}">{{ __('Add question') }}</a>
-        </div>
+    <main class="admin-screen admin-questions-page">
+        <header class="admin-questions-heading">
+            <div>
+                <a class="admin-back-link" href="{{ route('admin.dashboard') }}">← {{ __('Admin dashboard') }}</a>
+                <h1>{{ __('Question bank') }}</h1>
+                <p>{{ __('Organize questions by country, category and difficulty.') }}</p>
+            </div>
+            <a class="admin-action-primary" href="{{ route('admin.questions.create') }}"><i class="fa-solid fa-plus" aria-hidden="true"></i> {{ __('Add question') }}</a>
+        </header>
 
         @if (session('status'))
             <p class="subtle">{{ session('status') }}</p>
         @endif
 
-        <div class="side-list">
-            @foreach ($questions as $question)
-                <div class="rank">
-                    <div>
-                        <strong>{{ $question->country }}</strong> &middot; {{ $question->difficulty }} &middot; {{ $question->category }}
-                        <div class="subtle">{{ Illuminate\Support\Str::limit($question->question_text, 80) }}</div>
+        <form class="admin-question-filters" method="GET" action="{{ route('admin.questions.index') }}">
+            <label>{{ __('Country') }}
+                <select name="country">
+                    <option value="">{{ __('All countries') }}</option>
+                    @foreach ($countries as $country)
+                        <option value="{{ $country }}" @selected($selectedCountry === $country)>{{ __($country) }}</option>
+                    @endforeach
+                </select>
+            </label>
+            <label>{{ __('Category') }}
+                <select name="category">
+                    <option value="">{{ __('All categories') }}</option>
+                    @foreach ($categories as $category)
+                        <option value="{{ $category }}" @selected($selectedCategory === $category)>{{ __($category) }}</option>
+                    @endforeach
+                </select>
+            </label>
+            <button class="button" type="submit">{{ __('Filter questions') }}</button>
+            @if ($selectedCountry || $selectedCategory)
+                <a class="admin-filter-reset" href="{{ route('admin.questions.index') }}">{{ __('Clear filters') }}</a>
+            @endif
+        </form>
+
+        <div class="admin-question-list">
+            @forelse ($questions as $question)
+                <article class="admin-question-row">
+                    <div class="admin-question-info">
+                        <div class="admin-question-tags">
+                            <span>{{ __($question->country) }}</span>
+                            <span>{{ $question->category }}</span>
+                            <span class="difficulty-{{ $question->difficulty }}">{{ __($question->difficulty) }}</span>
+                        </div>
+                        <strong>{{ $question->question_text }}</strong>
                     </div>
-                    <div style="display:flex; gap:10px; align-items:center;">
-                        <a href="{{ route('admin.questions.edit', $question) }}">{{ __('Edit') }}</a>
+                    <div class="admin-question-actions">
+                        <a class="admin-edit-link" href="{{ route('admin.questions.edit', $question) }}"><i class="fa-solid fa-pen" aria-hidden="true"></i> {{ __('Edit') }}</a>
                         <form method="POST" action="{{ route('admin.questions.destroy', $question) }}" onsubmit="return confirm('{{ __('Delete this question?') }}');">
                             @csrf
                             @method('DELETE')
-                            <button type="submit" style="background:none; border:none; color:var(--red); cursor:pointer; font:inherit;">{{ __('Delete') }}</button>
+                            <button class="admin-delete-button" type="submit"><i class="fa-solid fa-trash" aria-hidden="true"></i> {{ __('Delete') }}</button>
                         </form>
                     </div>
-                </div>
-            @endforeach
+                </article>
+            @empty
+                <p class="subtle">{{ __('No questions match these filters.') }}</p>
+            @endforelse
         </div>
 
-        <div style="margin-top:20px;">{{ $questions->links() }}</div>
+        @include('components.pagination', ['paginator' => $questions])
     </main>
 </x-layouts.app>

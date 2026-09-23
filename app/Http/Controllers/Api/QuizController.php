@@ -27,6 +27,20 @@ class QuizController extends Controller
         ]);
     }
 
+    public function questions()
+    {
+        $questions = Question::query()
+            ->whereIn('country', ['Croatia', 'Netherlands', 'Sweden'])
+            ->orderBy('country')
+            ->orderBy('id')
+            ->get();
+
+        return response()->json([
+            'total_questions' => $questions->count(),
+            'data' => $questions->map(fn (Question $question) => $this->questionData($question)),
+        ]);
+    }
+
     public function show(string $quiz)
     {
         $questions = $this->questionsFor($quiz)->get();
@@ -113,6 +127,7 @@ class QuizController extends Controller
         $session = Cache::get($key);
 
         abort_if($session === null, 404, 'Quiz session not found or expired.');
+        abort_unless($session['user_id'] === $request->user()->id, 403, 'This quiz belongs to another user.');
 
         $questionId = $session['question_ids'][$session['current_index']];
         $question = Question::findOrFail($questionId);
