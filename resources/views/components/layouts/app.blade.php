@@ -8,10 +8,9 @@
 </head>
 <body class="{{ ($profile ?? false) ? 'profile-page' : '' }}">
 <div class="site">
-    @if($welcome ?? false)
-    @elseif($game ?? false)
+    @if($game ?? false)
         <header class="game-topbar">
-            <a class="game-brand" href="{{ route('home') }}"><img src="{{ asset('images/Country_Quiz.png') }}" alt="Country Quiz logo"><span>Country Quiz</span></a>
+            <a class="game-brand" href="{{ auth()->check() ? route('dashboard') : route('home') }}"><img src="{{ asset('images/Country_Quiz.png') }}" alt="Country Quiz logo"><span>Country Quiz</span></a>
             @auth
                 <div class="game-score">Your scores: <strong>{{ auth()->user()->score ?? 0 }}</strong></div>
                 @php($remainingLives = min(3, max(0, request()->integer('lives', auth()->user()->lives ?? 3))))
@@ -27,11 +26,11 @@
         </header>
     @elseif($minimal ?? false)
         <header class="topbar minimal-topbar">
-            <a class="brand" href="{{ route('home') }}"><img class="brand-logo" src="{{ asset('images/Country_Quiz.png') }}" alt="Country Quiz logo"><span>Country Quiz</span></a>
+            <a class="brand" href="{{ auth()->check() ? route('dashboard') : route('home') }}"><img class="brand-logo" src="{{ asset('images/Country_Quiz.png') }}" alt="Country Quiz logo"><span>Country Quiz</span></a>
         </header>
     @else
         <header class="topbar">
-            <a class="brand" href="{{ route('home') }}"><img class="brand-logo" src="{{ asset('images/Country_Quiz.png') }}" alt="Country Quiz logo"><span>Country Quiz</span></a>
+            <a class="brand" href="{{ auth()->check() ? route('dashboard') : route('home') }}"><img class="brand-logo" src="{{ asset('images/Country_Quiz.png') }}" alt="Country Quiz logo"><span>Country Quiz</span></a>
             @auth
                 <nav class="nav" aria-label="Main navigation">
                     <a href="{{ route('game') }}">Play</a>

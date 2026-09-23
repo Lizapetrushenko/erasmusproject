@@ -835,6 +835,15 @@ body:has(.profile-screen) .profile-screen {
 
 .welcome-logo {
     position: absolute;
+    top: clamp(12px, 2vh, 24px);
+    left: clamp(20px, 4vw, 64px);
+    width: var(--logo-size);
+    height: var(--logo-size);
+    object-fit: contain;
+}
+
+.welcome-logo {
+    position: absolute;
     top: 12px;
     left: 26px;
     width: 105px;
@@ -1160,6 +1169,57 @@ body:has(.profile-screen) .profile-screen {
         width: 190px;
         height: 34px;
         font-size: 11px;
+    }
+}
+
+/* Keep the logo and header height consistent on every page. */
+:root {
+    --header-height: 72px;
+    --logo-size: 52px;
+}
+
+.topbar,
+.minimal-topbar,
+.game-topbar {
+    min-height: var(--header-height);
+    height: var(--header-height);
+}
+
+.brand-logo,
+.minimal-topbar .brand-logo,
+.game-brand img {
+    width: var(--logo-size);
+    height: var(--logo-size);
+}
+
+.game-brand {
+    gap: 12px;
+    font-size: 18px;
+}
+
+@media (max-width: 760px) {
+    :root {
+        --header-height: 62px;
+        --logo-size: 44px;
+    }
+
+    .topbar,
+    .minimal-topbar,
+    .game-topbar {
+        min-height: var(--header-height);
+        height: var(--header-height);
+    }
+
+    .game-brand {
+        gap: 7px;
+        font-size: 12px;
+    }
+
+    .game-brand img,
+    .brand-logo,
+    .minimal-topbar .brand-logo {
+        width: var(--logo-size);
+        height: var(--logo-size);
     }
 }
 
@@ -1583,4 +1643,53 @@ body:has(.profile-screen) .profile-screen {
 
     .congratulations-screen { min-height: calc(100dvh - var(--header-height)); padding: 18px 10px 28px; }
     .congratulations-card { min-height: 280px; padding: 20px 16px 24px; border-radius: 18px; }
+}
+
+/* Final shared header sizing for every page. */
+.topbar,
+.minimal-topbar,
+.game-topbar {
+    width: 100%;
+    height: 72px;
+    min-height: 72px;
+    padding-top: 0;
+    padding-bottom: 0;
+}
+
+.brand-logo,
+.minimal-topbar .brand-logo,
+.game-brand img {
+    width: 52px;
+    height: 52px;
+}
+
+.brand,
+.minimal-topbar .brand,
+.game-brand {
+    min-height: 72px;
+    gap: 12px;
+}
+
+@media (max-width: 760px) {
+    .topbar,
+    .minimal-topbar,
+    .game-topbar {
+        height: 62px;
+        min-height: 62px;
+    }
+
+    .brand,
+    .minimal-topbar .brand,
+    .game-brand {
+        min-height: 62px;
+        gap: 8px;
+        font-size: 12px;
+    }
+
+    .brand-logo,
+    .minimal-topbar .brand-logo,
+    .game-brand img {
+        width: 44px;
+        height: 44px;
+    }
 }

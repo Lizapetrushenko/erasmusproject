@@ -10,7 +10,7 @@
 <body>
 <div class="site">
     <header class="topbar">
-        <a class="brand" href="{{ route('home') }}"><img class="brand-logo" src="{{ asset('images/Country_Quiz.png') }}" alt="Country Quiz logo"><span>Country Quiz</span></a>
+        <a class="brand" href="{{ auth()->check() ? route('dashboard') : route('home') }}"><img class="brand-logo" src="{{ asset('images/Country_Quiz.png') }}" alt="Country Quiz logo"><span>Country Quiz</span></a>
         <nav class="nav" aria-label="Main navigation">
             <a href="{{ route('game') }}">Play</a>
             <a href="{{ route('leaderboard') }}">Leaderboard</a>
