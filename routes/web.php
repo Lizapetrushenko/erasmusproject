@@ -6,14 +6,16 @@ use App\Http\Controllers\Api\ScoreController;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\QuizGameController;
 use Illuminate\Support\Facades\Route;
+use Illuminate\Support\Facades\Auth;
 
 Route::get('/', function () {
-    if (auth()->check()) {
+    if (Auth::check()) {
         return redirect()->route('dashboard');
     }
-
+ 
     return view('welcome');
 })->name('home');
+ 
 
 Route::get('/dashboard', fn () => view('pages.dashboard'))
     ->middleware(['auth', 'verified'])->name('dashboard');
