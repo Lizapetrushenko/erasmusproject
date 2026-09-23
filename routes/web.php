@@ -48,6 +48,8 @@ Route::get('/register', function () {
     return view('authentication.register');
 })->name('register');
 
+Route::post('/register', [AuthController::class, 'register'])->name('register.store');
+
 Route::get('/game', function () {
     return view('pages.dashboard');
 })->name('game');
