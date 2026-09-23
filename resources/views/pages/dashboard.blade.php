@@ -8,7 +8,7 @@
         <div class="rules-grid">
             <article class="rule-card card-lives">
                 <div class="rule-icon">❤️</div>
-                <h2>{{ __('3 Lives') }}</h2>
+                <h2>{{ __('3 lives') }}</h2>
                 <p>{{ __('You start with three chances. Keep your streak alive.') }}</p>
             </article>
 
@@ -22,9 +22,9 @@
                 <div class="rule-icon">✅</div>
                 <h2>{{ __('Scoring') }}</h2>
                 <ul>
-                    <li>{{ __('Easy') }} = +10</li>
-                    <li>{{ __('Medium') }} = +15</li>
-                    <li>{{ __('Hard') }} = +20</li>
+                    <li>{{ __('Easy = +10') }}</li>
+                    <li>{{ __('Medium = +15') }}</li>
+                    <li>{{ __('Hard = +20') }}</li>
                 </ul>
             </article>
 

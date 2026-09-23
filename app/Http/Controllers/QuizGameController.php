@@ -25,7 +25,7 @@ class QuizGameController extends Controller
             ->all();
 
         if (count($questionIds) < 10) {
-            return back()->withErrors(['country' => 'This quiz does not have enough questions yet.']);
+            return back()->withErrors(['country' => __('This quiz does not have enough questions yet.')]);
         }
 
         $request->session()->put('quiz', [

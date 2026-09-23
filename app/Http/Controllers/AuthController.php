@@ -8,7 +8,6 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Password;
 use Illuminate\Validation\Rules\Password as PasswordRule;
-use Illuminate\Validation\ValidationException;
 
 class AuthController extends Controller
 {
@@ -20,7 +19,7 @@ class AuthController extends Controller
         ]);
 
         if (! Auth::attempt($credentials, $request->boolean('remember'))) {
-            $errors = ['email' => 'The email or password is incorrect.'];
+            $errors = ['email' => __('The email or password is incorrect.')];
 
             if ($request->expectsJson()) {
                 return response()->json([
@@ -30,16 +29,13 @@ class AuthController extends Controller
             }
 
             return back()->withInput($request->only('email'))->withErrors($errors);
-            throw ValidationException::withMessages([
-                'email' => ['The email or password is incorrect.'],
-            ]);
         }
 
         $request->session()->regenerate();
 
         if ($request->expectsJson()) {
             return response()->json([
-                'message' => 'Login successful.',
+                'message' => __('Login successful.'),
                 'redirect' => route('dashboard'),
             ]);
         }
@@ -63,56 +59,32 @@ class AuthController extends Controller
 
         if ($request->expectsJson()) {
             return response()->json([
-                'message' => 'Registration successful. Please sign in.',
+                'message' => __('Registration successful. Please sign in.'),
                 'redirect' => route('login'),
             ], 201);
         }
 
-        return redirect()->route('login')->with('status', 'Registration successful. Please sign in.');
-        Auth::login($user);
-        $request->session()->regenerate();
-
-        return redirect()->route('dashboard');
+        return redirect()->route('login')->with('status', __('Registration successful. Please sign in.'));
     }
 
     public function forgotPassword(Request $request)
     {
-        $validated = $request->validate([
+        $request->validate([
             'email' => ['required', 'email'],
-            'password' => ['required', 'confirmed', PasswordRule::min(8)],
         ]);
 
-        $user = User::where('email', $validated['email'])->first();
+        $status = Password::sendResetLink($request->only('email'));
 
-        if (! $user) {
-            $message = 'No account was found with this email address.';
-
-            if (! $request->expectsJson()) {
-                return back()->withInput()->withErrors(['email' => $message]);
+        if ($status !== Password::RESET_LINK_SENT) {
+            if ($request->expectsJson()) {
+                return response()->json(['message' => __($status)], 422);
             }
 
-            return response()->json([
-                'message' => $message,
-                'errors' => ['email' => [$message]],
-            ], 422);
+            return back()->withInput()->withErrors(['email' => __($status)]);
         }
 
-        $user->forceFill([
-            'password' => Hash::make($validated['password']),
-        ])->save();
-
-        if (! $request->expectsJson()) {
-            return redirect()->route('login')->with('status', 'Password successfully reset. Please sign in.');
-        }
-
-        return response()->json([
-            'message' => 'Password successfully reset. Please sign in.',
-            'redirect' => route('login'),
-        ]);
-        if ($status !== Password::RESET_LINK_SENT) {
-            throw ValidationException::withMessages([
-                'email' => [__($status)],
-            ]);
+        if ($request->expectsJson()) {
+            return response()->json(['message' => __($status)]);
         }
 
         return back()->with('status', __($status));
@@ -155,11 +127,11 @@ class AuthController extends Controller
         }
 
         if (! $request->expectsJson()) {
-            return redirect()->route('login')->with('status', 'Password successfully reset. Please sign in.');
+            return redirect()->route('login')->with('status', __('Password successfully reset. Please sign in.'));
         }
 
         return response()->json([
-            'message' => 'Password successfully reset.',
+            'message' => __('Password successfully reset.'),
             'redirect' => route('login'),
         ]);
     }
@@ -188,7 +160,7 @@ class AuthController extends Controller
         ]);
 
         if (! empty($validated['password']) && empty($validated['current_password'])) {
-            return back()->withErrors(['current_password' => 'Enter your current password to change it.']);
+            return back()->withErrors(['current_password' => __('Enter your current password to change it.')]);
         }
 
         $user = $request->user();
@@ -199,7 +171,7 @@ class AuthController extends Controller
         }
         $user->save();
 
-        return back()->with('status', 'Profile updated successfully.');
+        return back()->with('status', __('Profile updated successfully.'));
     }
 
     public function deleteAccount(Request $request)
@@ -214,7 +186,6 @@ class AuthController extends Controller
         $request->session()->invalidate();
         $request->session()->regenerateToken();
 
-        return redirect()->route('home')->with('status', 'Your account was deleted.');
-        return redirect()->route('login');
+        return redirect()->route('home')->with('status', __('Your account was deleted.'));
     }
 }
