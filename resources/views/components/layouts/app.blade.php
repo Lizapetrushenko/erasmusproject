@@ -12,14 +12,18 @@
     @elseif($game ?? false)
         <header class="game-topbar">
             <a class="game-brand" href="{{ route('home') }}"><img src="{{ asset('images/Country_Quiz.png') }}" alt="Country Quiz logo"><span>Country Quiz</span></a>
-            <div class="game-score">Your scores: <strong>50</strong></div>
-            @php($remainingLives = min(3, max(0, request()->integer('lives', 3))))
-            <div class="game-hearts" aria-label="{{ $remainingLives }} lives remaining">
-                @for ($heart = 1; $heart <= 3; $heart++)
-                    <span class="heart {{ $heart <= $remainingLives ? 'heart-live' : 'heart-lost' }}">♥</span>
-                @endfor
-            </div>
-            <a class="game-profile" href="{{ route('profile') }}" aria-label="Profile">♙</a>
+            @auth
+                <div class="game-score">Your scores: <strong>{{ auth()->user()->score ?? 0 }}</strong></div>
+                @php($remainingLives = min(3, max(0, request()->integer('lives', auth()->user()->lives ?? 3))))
+                <div class="game-hearts" aria-label="{{ $remainingLives }} lives remaining">
+                    @for ($heart = 1; $heart <= 3; $heart++)
+                        <span class="heart {{ $heart <= $remainingLives ? 'heart-live' : 'heart-lost' }}">♥</span>
+                    @endfor
+                </div>
+                <a class="game-profile profile-icon-link" href="{{ route('profile') }}" aria-label="Profile" title="Profile">
+                    <i class="fa-solid fa-user" aria-hidden="true"></i>
+                </a>
+            @endauth
         </header>
     @elseif($minimal ?? false)
         <header class="topbar minimal-topbar">
@@ -28,12 +32,15 @@
     @else
         <header class="topbar">
             <a class="brand" href="{{ route('home') }}"><img class="brand-logo" src="{{ asset('images/Country_Quiz.png') }}" alt="Country Quiz logo"><span>Country Quiz</span></a>
-            <nav class="nav" aria-label="Main navigation">
-                <a href="{{ route('game') }}">Play</a>
-                <a href="{{ route('leaderboard') }}">Leaderboard</a>
-                <a href="{{ route('profile') }}">Profile</a>
-                <a class="nav-button" href="{{ route('login') }}">Sign in</a>
-            </nav>
+            @auth
+                <nav class="nav" aria-label="Main navigation">
+                    <a href="{{ route('game') }}">Play</a>
+                    <a href="{{ route('leaderboard') }}">Leaderboard</a>
+                    <a href="{{ route('profile') }}" aria-label="Profile" title="Profile" class="profile-icon-link">
+                        <i class="fa-solid fa-user" aria-hidden="true"></i>
+                    </a>
+                </nav>
+            @endauth
         </header>
     @endif
     {{ $slot }}
