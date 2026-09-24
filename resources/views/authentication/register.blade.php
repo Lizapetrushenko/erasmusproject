@@ -7,10 +7,10 @@
 
             <section class="auth-card signup-card">
 
-                <h1>Sign up</h1>
+                <h1>{{ __('Sign up') }}</h1>
 
                 <label class="field">
-                    Name:
+                    {{ __('Name:') }}
                     <input
                         type="text"
                         name="name"
@@ -26,7 +26,7 @@
                 @enderror
 
                 <label class="field">
-                    Email address:
+                    {{ __('Email address:') }}
                     <input
                         type="email"
                         name="email"
@@ -42,7 +42,7 @@
                 @enderror
 
                 <label class="field">
-                    Password:
+                    {{ __('Password:') }}
                     <input
                         type="password"
                         name="password"
@@ -57,7 +57,7 @@
                 @enderror
 
                 <label class="field">
-                    Confirm password:
+                    {{ __('Confirm password:') }}
                     <input
                         type="password"
                         name="password_confirmation"
@@ -78,7 +78,7 @@
                         class="auth-text-link"
                         href="{{ route('login') }}"
                     >
-                        Already have an account? Sign in
+                        {{ __('Already have an account? Sign in') }}
                     </a>
 
                 </div>
@@ -89,7 +89,7 @@
                         class="button auth-submit"
                         type="submit"
                     >
-                        Sign up
+                        {{ __('Sign up') }}
                     </button>
                 </div>
 

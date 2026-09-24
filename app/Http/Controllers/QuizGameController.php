@@ -60,10 +60,13 @@ class QuizGameController extends Controller
             $request->session()->put('quiz', $quiz);
         }
 
+        $feedback = $quiz['feedback'] ?? null;
+
         return view('pages.quiz', [
             'quiz' => $quiz,
             'question' => Question::findOrFail($quiz['question_ids'][$quiz['index']]),
-            'secondsRemaining' => max(1, 20 - (now()->timestamp - $quiz['question_started_at'])),
+            'secondsRemaining' => $feedback ? 0 : max(1, 20 - (now()->timestamp - $quiz['question_started_at'])),
+            'feedback' => $feedback,
         ]);
     }
 
@@ -72,13 +75,21 @@ class QuizGameController extends Controller
         $quiz = $request->session()->get('quiz');
         abort_if(! $quiz, 404, 'Quiz session not found.');
 
+        if (isset($quiz['feedback'])) {
+            unset($quiz['feedback']);
+            $quiz['index']++;
+            $quiz['question_started_at'] = now()->timestamp;
+            return $this->advance($request, $quiz);
+        }
+
         $expired = now()->timestamp - ($quiz['question_started_at'] ?? now()->timestamp) >= 20;
         $answer = $expired ? null : $request->validate([
             'answer' => ['required', Rule::in(['a', 'b', 'c', 'd'])],
         ])['answer'];
         $question = Question::findOrFail($quiz['question_ids'][$quiz['index']]);
 
-        if ($answer !== null && $answer === $question->correct_option) {
+        $isCorrect = $answer !== null && $answer === $question->correct_option;
+        if ($isCorrect) {
             $quiz['correct_answers']++;
             $quiz['score'] += match ($quiz['difficulty']) {
                 'easy' => 10,
@@ -89,8 +100,13 @@ class QuizGameController extends Controller
             $quiz['lives']--;
         }
 
-        $quiz['index']++;
-        $quiz['question_started_at'] = now()->timestamp;
+        $quiz['feedback'] = ['answer' => $answer, 'correct_option' => $question->correct_option, 'correct' => $isCorrect];
+        $request->session()->put('quiz', $quiz);
+        return redirect()->route('quiz.show');
+    }
+
+    private function advance(Request $request, array $quiz)
+    {
         $finished = $quiz['lives'] <= 0 || $quiz['index'] >= count($quiz['question_ids']);
 
         if ($finished) {

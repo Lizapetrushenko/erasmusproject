@@ -272,6 +272,13 @@ img {
 .quiz-answers { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 14px; }
 .quiz-answers button { display: flex; gap: 14px; align-items: center; min-height: 58px; padding: 12px 18px; border: 1px solid var(--line); border-radius: 10px; background: #fff; cursor: pointer; text-align: left; }
 .quiz-answers button:hover { border-color: var(--blue); background: #f5f8ff; }
+.quiz-answers button.is-correct { border-color: #16803c; background: #e8f7ed; color: #14532d; }
+.quiz-answers button.is-wrong { border-color: #c62828; background: #fdecec; color: #8b1e1e; }
+.quiz-answers button:disabled { cursor: default; }
+.quiz-feedback { margin: -18px 0 20px; text-align: center; font-weight: 700; }
+.quiz-feedback.is-correct { color: #16803c; }
+.quiz-feedback.is-wrong { color: #c62828; }
+.quiz-answers button.quiz-continue { grid-column: 1 / -1; justify-content: center; border-color: var(--blue); background: var(--blue); color: #fff; }
 .quiz-answers strong { color: var(--red); }
 .quiz-lives { margin-top: 24px; color: var(--red); text-align: center; }
 .profile-save { display: block; margin: 12px auto 0; border: 0; border-radius: 6px; padding: 9px 22px; background: #3aada4; color: #fff; cursor: pointer; }
@@ -505,6 +512,32 @@ h2 {
 .auth-submit:hover {
     background: #328f88;
     transform: translateY(-1px);
+}
+
+:root[data-theme="dark"] .auth-card .field {
+    color: var(--muted);
+}
+
+:root[data-theme="dark"] .auth-card .field input {
+    border-color: #55515f;
+    background: #17161d;
+    color: #f2f1f5;
+    caret-color: #f2f1f5;
+}
+
+:root[data-theme="dark"] .auth-card .field input:-webkit-autofill,
+:root[data-theme="dark"] .auth-card .field input:-webkit-autofill:focus {
+    -webkit-text-fill-color: #f2f1f5;
+    box-shadow: 0 0 0 1000px #17161d inset;
+}
+
+:root[data-theme="dark"] .auth-card .auth-text-link,
+:root[data-theme="dark"] .auth-card .auth-text-link:hover {
+    color: #c4b5fd;
+}
+
+:root[data-theme="dark"] .auth-card .auth-submit {
+    color: #101014;
 }
 
 .signin-card .button,
@@ -1102,6 +1135,8 @@ body:has(.profile-screen) .profile-screen {
 
 .rules-cta {
     display: flex;
+    flex-wrap: wrap;
+    gap: 12px;
     justify-content: center;
     margin-top: 28px;
 }

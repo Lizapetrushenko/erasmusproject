@@ -43,6 +43,7 @@
 
         <div class="rules-cta">
             <a class="rules-button" href="{{ route('levels') }}">{{ __('Go to choose the quiz') }}</a>
+            <a class="rules-button" href="{{ route('leaderboard') }}">{{ __('See leaderboard') }}</a>
         </div>
     </main>
 </x-layouts.app>

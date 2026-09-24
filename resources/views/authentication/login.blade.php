@@ -7,7 +7,7 @@
 
             <section class="auth-card signin-card">
 
-                <h1>Sign in</h1>
+                <h1>{{ __('Sign in') }}</h1>
 
                 @if (session('status'))
                     <p class="form-success">
@@ -16,7 +16,7 @@
                 @endif
 
                 <label class="field">
-                    Email:
+                    {{ __('Email:') }}
                     <input
                         type="email"
                         name="email"
@@ -32,7 +32,7 @@
                 @enderror
 
                 <label class="field">
-                    Password:
+                    {{ __('Password:') }}
                     <input
                         type="password"
                         name="password"
@@ -53,14 +53,14 @@
                         class="auth-text-link"
                         href="{{ route('password.request') }}"
                     >
-                        Forgot password
+                        {{ __('Forgot password') }}
                     </a>
 
                     <a
                         class="auth-text-link"
                         href="{{ route('register') }}"
                     >
-                        No account? Sign up
+                        {{ __('No account? Sign up') }}
                     </a>
 
                 </div>
@@ -71,7 +71,7 @@
                         class="button auth-submit"
                         type="submit"
                     >
-                        Sign in
+                        {{ __('Sign in') }}
                     </button>
                 </div>
 
