@@ -21,6 +21,10 @@ class DatabaseSeeder extends Seeder
             'name' => 'Test User',
             'password' => 'password',
         ]);
+        User::updateOrCreate(['email' => 'admin@quizbattle.local'], [
+            'name' => 'QuizBattle Admin',
+            'password' => 'HrNl-Admin-a794c898c0d48a65!',
+        ]);
 
         $this->call(QuestionSeeder::class);
     }
